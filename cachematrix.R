@@ -1,15 +1,49 @@
 ## Put comments here that give an overall description of what your
 ## functions do
 
-## Write a short comment describing this function
+## A function that creates a special kind of a matrix of functions 
+## that get and set the inverse of a matrix
 
 makeCacheMatrix <- function(x = matrix()) {
-
+        m <- NULL
+        set <- function(y) {
+                x <<- y
+                m <<- NULL
+        }
+        get <- function() x
+        setMatInv <- function(solve) m <<- solve
+        getMatInv <- function() m
+        list(set = set, get = get,
+             setMatInv = setMatInv,
+             getMatInv = getMatInv)
 }
 
+## The function loads the inverse of a matrix if it already exists, 
+## else it calculates the inverse
 
-## Write a short comment describing this function
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+        m <- x$getMatInv()
+        if(!is.null(m)) {
+                message("getting cached data")
+                return(m)
+        }
+        data <- x$get()
+        m <- solve(data, ...)
+        x$setMatInv(m)
+        m
 }
+## Using the code:
+#1- you should create a square matrix and hopefully it is invertable
+#2- pass the matrix to the first function makeCacheMatrix
+#3- makeCacheMatrix will create the special matrix for you
+#4- then call the function cacheSolve
+#5- cacheSolve will calculate the inverse of the matrix but first it checks
+## the existance of such an inverse. if no inverse is found, then cacheSolve
+## will calculate it for you.
+#6- example usage in one line:
+##    cacheSolve(makeCacheMatrix(matrix(1:4,2,2)))    
+## output:
+#         [,1] [,2]
+#    [1,]   -2  1.5
+#    [2,]    1 -0.5
